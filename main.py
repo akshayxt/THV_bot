@@ -11,13 +11,13 @@ API_HASH = "717cf21d94c4934bcbe1eaa1ad86ae75"
 BOT_TOKEN = "7796568404:AAF2gRAROH7es6Mz9S8UJ-d6UZvlVC-SS5Q"
 
 BACKUP_CHANNEL_ID = -1002696911386
-STARTUP_NOTIFY_CHAT_ID = -1002696911386
+STARTUP_NOTIFY_CHAT_ID = -1002696911386  # Ensure bot is member/admin here
 
 flask_app = Flask(__name__)
 
 @flask_app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html")  # templates/index.html should exist
 
 def run_flask():
     port = int(os.environ.get("PORT", 5000))
@@ -25,7 +25,6 @@ def run_flask():
 
 
 bot = Client("GroupMediaBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
-
 
 @bot.on_message(filters.command("msgc") & filters.group)
 async def count_messages(client, message: Message):
@@ -60,7 +59,6 @@ async def greet_user(client, message: Message):
 
 
 def run_bot():
-    # Start the bot client and send startup message after start
     async def start_bot():
         await bot.start()
         try:
@@ -68,7 +66,9 @@ def run_bot():
             print("✅ Startup message sent.")
         except Exception as e:
             print(f"❌ Error sending startup message: {e}")
-        await bot.idle()
+
+        # Keep bot running
+        await asyncio.Event().wait()
 
     asyncio.run(start_bot())
 
